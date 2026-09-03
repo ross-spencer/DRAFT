@@ -9,7 +9,7 @@
 PRONOM records two types of file format signature:
 
 * Standard signatures.
-* Container signatures.
+- Container signatures.
 
 Standard signatures can be used on all file types and they are used to identify
 consistent patterns and sequences in those files to then assign an identifier.
