@@ -1,7 +1,5 @@
 # PRONOM signature development guide
 
-## TOC
-
 # Table of contents
 
 - [Introduction](#introduction)
@@ -33,10 +31,25 @@
 
 ## Introduction
 
+Research into PRONOM signatures is an entire topic best covered by other
+resources like the [PRONOM Starter Pack][starter-1] and the recent
+Carpentries Workshop []"Searching for a Signature"][searching-1]. What are
+the fundamental details, however, about what a signature file looks like
+and how it is built? This document provides a low-level guide, cribbed from
+various other resources (linked to at the bottom) that should help you
+understand how to build a signature file, but especially, build container
+signature files, for which there are only a small number of resources to
+help you do this today.
+
+[starter-1]: https://github.com/digital-preservation/PRONOM_Research/blob/main/Resources/Starter_Pack.md
+[searching-1]: https://ffdev-info.github.io/searching-for-a-signature/
+
+## Background
+
 PRONOM records two types of file format signature:
 
 * Standard signatures.
--    Container signatures.
+* Container signatures.
 
 Standard signatures can be used on all file types and they are used to identify
 consistent patterns and sequences in those files to then assign an identifier.
