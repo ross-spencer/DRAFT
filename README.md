@@ -2,14 +2,41 @@
 
 ## TOC
 
-\<\!-- via: https://luciopaiva.com/markdown-toc/ \--\>
+# Table of contents
+
+- [Introduction](#introduction)
+- [Syntax](#syntax)
+- [PRONOM syntax](#pronom-syntax)
+- [PRONOM positions](#pronom-positions)
+  - [Position examples](#position-examples)
+- [PRONOM semantics](#pronom-semantics)
+- [PRONOM signature files](#pronom-signature-files)
+  - [Standard signature files](#standard-signature-files)
+  - [Container signature files](#container-signature-files)
+- [Templates for DROID](#templates-for-droid)
+  - [Standard signature files](#standard-signature-files)
+  - [Container signature files](#container-signature-files)
+- [Worked examples](#worked-examples)
+  - [Standard signature example](#standard-signature-example)
+  - [Container signature example](#container-signature-example)
+- [Use in DROID](#use-in-droid)
+- [Use in ROY](#use-in-roy)
+- [Signature development utility](#signature-development-utility)
+- [Cheatsheet](#cheatsheet)
+  - [Glossary](#glossary)
+- [Credits](#credits)
+- [Informative references](#informative-references)
+- [Unused](#unused)
+- [Unused](#unused)
+
+<!-- via: https://luciopaiva.com/markdown-toc/ -->
 
 ## Introduction
 
 PRONOM records two types of file format signature:
 
 * Standard signatures.
-- Container signatures.
+-    Container signatures.
 
 Standard signatures can be used on all file types and they are used to identify
 consistent patterns and sequences in those files to then assign an identifier.
