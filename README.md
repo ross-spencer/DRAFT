@@ -1,10 +1,10 @@
 # PRONOM signature development guide
 
-# TOC
+## TOC
 
 \<\!-- via: https://luciopaiva.com/markdown-toc/ \--\>
 
-# Introduction
+## Introduction
 
 PRONOM records two types of file format signature:
 
@@ -22,7 +22,7 @@ As container file formats can contain files and directories, container signature
 
 We will look at both types of signature below and describe how to construct them; before that, we must talk about something called syntax.
 
-# Syntax
+## Syntax
 
 Syntax is described in the written language as the set of rules that describe how words and phrases are arranged to make well-formed sentences. Syntax is one of the foundations of language and one of the keys to being able to express oneself well.
 
@@ -35,7 +35,7 @@ When syntax is combined, in written language, code, or in PRONOM, the result is 
 | *"* | *This file conforms to what is described in this signature's syntax. As such, this file is of the type described by this signature.* |
 | ----: | :---- |
 
-# PRONOM syntax
+## PRONOM syntax
 
 | Syntax element | Intended use | Example |
 | ----- | ----- | ----- |
@@ -50,7 +50,7 @@ When syntax is combined, in written language, code, or in PRONOM, the result is 
 | Single wildcard: ?? | The following byte may have any value. This is functionally equivalent to {1} | A1B2C3D4??E5F6A7B8 |
 | NOT Byte range \[\!a:b\] | The next byte will not be within the range specified | A1B2C3D4\[\!A4:B0\]E5 |
 
-# PRONOM positions
+## PRONOM positions
 
 PRONOM signatures work from an offset at one of three positions:
 
@@ -60,7 +60,7 @@ Var: Variable \- the signature sequence may be found anywhere within the file
 Offset \- the position, relative to the BOF, or EOF, where the sequence begins. 0 is default, meaning no offset. Since an offset of 0 means ‘starting from the first byte’, an offset of 4 means ‘starting from the 5th byte’, or ‘after the 4th byte’
 Maximum Offset \- A further offset, relative to the initial Offset value described above. The default is 0, meaning no further possible offset.
 
-## Position examples
+### Position examples
 
 BOF, Offset 0, Maximum offset 0: The signature sequence starts at the very beginning of the file
 
@@ -80,7 +80,7 @@ EOF, Offset 4, Maximum Offset 4: The signature sequence may end anywhere from 4 
 | ----- | ----- | ----- |
 | Wildcards at a beginning of a BOF sequence, or end of an EOF sequence | This is functionally equivalent to specifying Offset/Maximum Offset, however this is not recommended | {4}A1B2C3D4 or: {0-4}A1B2C3D4 |
 
-# PRONOM semantics
+## PRONOM semantics
 
 PRONOM signatures can be combined any way whatsoever, but they will usually be some form of literal sequence that combines some wildcard elements that help account for any variability or uncertainty about what we know about a file format's structure.
 
@@ -92,11 +92,11 @@ Once PRONOM signatures are combined we can begin to understand their semantics. 
 |  |  |  |
 |  |  |  |
 
-# PRONOM signature files
+## PRONOM signature files
 
 PRONOM signature files are described in Extensible Markup Language (XML). While you might not engage with this view of a signature file very often, knowing how the file is structured helps you debug issues and helps developers with the process of creating software that implements these standards.
 
-## Standard signature files
+### Standard signature files
 
 There are two primary sections within a FFSignatureFile element each have a one to many relationship to children describing standard signatures and metadata about file formats associated with those.
 
@@ -160,7 +160,7 @@ NB. XML comments are used to provide further description.
 </FFSignatureFile>
 ```
 
-## Container signature files
+### Container signature files
 
 Three primary sections within a ContainerSignatureMapping element with some child sections with added relevance:
 
@@ -208,9 +208,9 @@ In XML this looks as follows:
 </ContainerSignatureMapping>
 ```
 
-# Templates for DROID
+## Templates for DROID
 
-## Standard signature files
+### Standard signature files
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -287,14 +287,14 @@ In XML this looks as follows:
 
 ```
 
-## Container signature files
+### Container signature files
 
 …
 https://github.com/exponential-decay/droid-signature-files/blob/master/signature-file-templates/DROID-container-id-container-base-file.xml
 
-# Worked examples
+## Worked examples
 
-## Standard signature example
+### Standard signature example
 
 Here is a real-world signature example taken from PRONOM:
 
@@ -308,23 +308,23 @@ Here is a real-world signature example taken from PRONOM:
 
 \[fmt/42 \- JPEG 1.00\](https://www.nationalarchives.gov.uk/PRONOM/fmt/42).
 
-### Process
+#### Process
 
 1. add to …
 2. add to…
 3.
 
-## Container signature example
+### Container signature example
 
 …
 
-### Process
+#### Process
 
 1. add to standard sig…
 2. add to …
 3.
 
-# Use in DROID
+## Use in DROID
 
 DROID has two directories for signature files under the following location:
 
@@ -336,23 +336,21 @@ container\_sigs
 
 Standard signature files must be placed in signature\_files and container signature files must be placed in container\_sigs
 
-# Use in ROY
+## Use in ROY
 
-https://github.com/richardlehane/siegfried/wiki/Building-a-signature-file-with-ROY\#pronom-signature-development
+https://github.com/richardlehane/siegfried/wiki/Building-a-signature-file-with-ROY#pronom-signature-development
 
 roy build extend…
 
-# Signature development utility
+## Signature development utility
 
 The signature development utility makes it easier to create signature files by hiding the need to write XML from you.
 
-#
+## Cheatsheet
 
-# Cheatsheet
+#### PRONOM terms, basic syntax and data model
 
-\#\#\# PRONOM terms, basic syntax and data model
-
-\#\#\#\# Offset markers
+##### Offset markers
 
 \*\*BOF\*\* \= Beginning of File.
 
@@ -360,7 +358,7 @@ The signature development utility makes it easier to create signature files by h
 
 \*\*Offset/Max Offset\*\* \= Exact or positional range in which a signature starts
 
-\#\#\#\# Wildcards
+##### Wildcards
 
 \*\*??\*\* \= single wildcard byte, e.g. \<code\>AB??C3\</code\>
 
@@ -370,24 +368,33 @@ The signature development utility makes it easier to create signature files by h
 
 \*\*{n-n}\*\* \= range of wildcard bytes, e.g. \<code\>4D{0-12}E4\</code\>
 
-\#\#\#\# Byte range
+##### Byte range
 
 \*\*\[hh:hh\]\*\* \= single byte value between range, e.g \<code\>\[00:FA\]\</code\>
 
-\#\#\#\# Either/or
+##### Either/or
 
 \*\*(hhhh|hhhh|hh)\*\* \= either/any or these byte values,
 e.g. \<code\>(0D|0A|0D0A)\</code\>
 
-\#\#\#\# Not
+##### Not
 
 \*\*\[\!hh\]\*\* \= anything except this byte value, e.g. \<code\>ABCD\[\!01\]E1\</code\>
 
-# Glossary
+### Glossary
 
 …
 
-# Informative references
+## Credits
+
+* David
+* Francesca
+* Tyler
+
+> NB. and everyone else who has contributed to this knowledge resource over
+the years
+
+## Informative references
 
 * https://exponentialdecay.co.uk/blog/declarative-all-the-way-down-building-pronom-signatures-with-jsonid/
 
