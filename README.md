@@ -40,13 +40,13 @@ When syntax is combined, in written language, code, or in PRONOM, the result is 
 | Syntax element | Intended use | Example |
 | ----- | ----- | ----- |
 | Literal sequence | Just a plain signature sequence that appears as-is | A1B2C3D4 |
-| Infinite wildcard: \* | The following sequence will appear at any point further in the file | A1B2C3D4\*E5F6A7B8 |
+| Infinite wildcard: * | The following sequence will appear at any point further in the file | A1B2C3D4*E5F6A7B8 |
 | Precise wildcard: {n} | The following sequence will appear after exactly the number of bytes specified | A1B2C3D4{4}E5F6A7B8 |
 | Wildcard range: {m-n} | The following sequence will appear at some point between the number of bytes specified | A1B2C3D4{4-8}E5F6A7B8 |
 | Either/Or: (a|b) | The following sequence will be any of the sequences specified. Any number of sequences can be specified | A1B2C3D4(0D|0A|0D0A)E5 |
 | Byte range \[a:b\] | The next byte will be within the range specified | A1B2C3D4\[A4:B0\]E5 |
 | NOT sequence: \[\!a\] | The following byte value is not this byte | A1B2C3D4\[\!E5\]F6 |
-| Wildcard with infinite range: {m-\*} | The following sequence will appear minimally after the first value specified, but otherwise anywhere else in the file | A1B2C3D4{4-\*}E5F6A7B8 |
+| Wildcard with infinite range: {m-*} | The following sequence will appear minimally after the first value specified, but otherwise anywhere else in the file | A1B2C3D4{4-*}E5F6A7B8 |
 | Single wildcard: ?? | The following byte may have any value. This is functionally equivalent to {1} | A1B2C3D4??E5F6A7B8 |
 | NOT Byte range \[\!a:b\] | The next byte will not be within the range specified | A1B2C3D4\[\!A4:B0\]E5 |
 
@@ -298,13 +298,13 @@ https://github.com/exponential-decay/droid-signature-files/blob/master/signature
 
 Here is a real-world signature example taken from PRONOM:
 
-\* Position type: Absolute from BOF
-\* Offset: 0
-\* Value: \<code\>FFD8FFE0{2}4A464946000100(00|01|02)\</code\>
-\* Position type: Absolute from EOF
-\* Offset: 0
-\* Maximum Offset: 65536
-\* Value: FFD9
+* Position type: Absolute from BOF
+* Offset: 0
+* Value: \<code\>FFD8FFE0{2}4A464946000100(00|01|02)\</code\>
+* Position type: Absolute from EOF
+* Offset: 0
+* Maximum Offset: 65536
+* Value: FFD9
 
 \[fmt/42 \- JPEG 1.00\](https://www.nationalarchives.gov.uk/PRONOM/fmt/42).
 
@@ -352,34 +352,34 @@ The signature development utility makes it easier to create signature files by h
 
 ##### Offset markers
 
-\*\*BOF\*\* \= Beginning of File.
+**BOF** \= Beginning of File.
 
-\*\*EOF\*\* \= End of File. Var \= Variable (anywhere in the file)
+**EOF** \= End of File. Var \= Variable (anywhere in the file)
 
-\*\*Offset/Max Offset\*\* \= Exact or positional range in which a signature starts
+**Offset/Max Offset** \= Exact or positional range in which a signature starts
 
 ##### Wildcards
 
-\*\*??\*\* \= single wildcard byte, e.g. \<code\>AB??C3\</code\>
+**??** \= single wildcard byte, e.g. \<code\>AB??C3\</code\>
 
-\*\*\\\*\*\* \= 0-many wildcard bytes, e.g \<code\>BC\*D4\</code\>
+**\\*** \= 0-many wildcard bytes, e.g \<code\>BC*D4\</code\>
 
-\*\*{n}\*\* \= specific number of wildcard bytes, e.g. \<code\>A2{5}F3\</code\>
+**{n}** \= specific number of wildcard bytes, e.g. \<code\>A2{5}F3\</code\>
 
-\*\*{n-n}\*\* \= range of wildcard bytes, e.g. \<code\>4D{0-12}E4\</code\>
+**{n-n}** \= range of wildcard bytes, e.g. \<code\>4D{0-12}E4\</code\>
 
 ##### Byte range
 
-\*\*\[hh:hh\]\*\* \= single byte value between range, e.g \<code\>\[00:FA\]\</code\>
+**\[hh:hh\]** \= single byte value between range, e.g \<code\>\[00:FA\]\</code\>
 
 ##### Either/or
 
-\*\*(hhhh|hhhh|hh)\*\* \= either/any or these byte values,
+**(hhhh|hhhh|hh)** \= either/any or these byte values,
 e.g. \<code\>(0D|0A|0D0A)\</code\>
 
 ##### Not
 
-\*\*\[\!hh\]\*\* \= anything except this byte value, e.g. \<code\>ABCD\[\!01\]E1\</code\>
+**\[\!hh\]** \= anything except this byte value, e.g. \<code\>ABCD\[\!01\]E1\</code\>
 
 ### Glossary
 
