@@ -1,6 +1,6 @@
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v6.0.0
     hooks:
     -   id: check-yaml
     -   id: check-json
@@ -9,13 +9,16 @@ repos:
     -   id: trailing-whitespace
     -   id: check-case-conflict
 - repo: https://github.com/igorshubovych/markdownlint-cli
-  rev: v0.35.0
+  rev: v0.49.1
   hooks:
   - id: markdownlint
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.3.0
+  rev: v2.4.3
   hooks:
     - id: codespell
       args: [-I, .codespellignore]
-exclude: |
-    (?x)()
+#exclude: |
+#    (?x)(
+#        ^samples/|
+#        ^docs/
+#    )
