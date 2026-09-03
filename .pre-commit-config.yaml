@@ -18,7 +18,4 @@ repos:
     - id: codespell
       args: [-I, .codespellignore]
 exclude: |
-    (?x)(
-        ^samples/|
-        ^docs/
-    )
+    (?x)()
