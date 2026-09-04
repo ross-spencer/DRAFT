@@ -33,9 +33,12 @@
 
 Research into PRONOM signatures is an entire topic best covered by other
 resources like the [PRONOM Starter Pack][starter-1] and the recent
-Carpentries Workshop []"Searching for a Signature"][searching-1]. What are
-the fundamental details, however, about what a signature file looks like
-and how it is built? This document provides a low-level guide, cribbed from
+Carpentries Workshop ["Searching for a Signature"][searching-1].
+
+_What are the fundamental details, however, about what a signature file looks
+like to build one?_
+
+This document provides a low-level guide, cribbed from
 various other resources (linked to at the bottom) that should help you
 understand how to build a signature file, but especially, build container
 signature files, for which there are only a small number of resources to
@@ -112,12 +115,12 @@ matches, we can say,
 
 PRONOM signatures work from an offset at one of three positions:
 
-* BOF: Beginning Of File \- the signature sequence starts at, or near the
+* BOF: Beginning Of File - the signature sequence starts at, or near the
 beginning of the file
-* EOF: End Of File \- the signature sequence starts at, or near the end
+* EOF: End Of File - the signature sequence starts at, or near the end
 of the file
-* Var: Variable \- the signature sequence may be found anywhere within the file
-* Offset \- the position, relative to the BOF, or EOF, where the sequence
+* Var: Variable - the signature sequence may be found anywhere within the file
+* Offset - the position, relative to the BOF, or EOF, where the sequence
 begins. 0 is default, meaning no offset. Since an offset of 0 means
 ‘starting from the first byte’, an offset of 4 means ‘starting from the
 5th byte’, or ‘after the 4th byte’
@@ -126,26 +129,21 @@ described above. The default is 0, meaning no further possible offset.
 
 ### Position examples
 
-BOF, Offset 0, Maximum offset 0: The signature sequence starts at the very
+* BOF, Offset 0, Maximum offset 0: The signature sequence starts at the very
 beginning of the file
-
-BOF, Offset 4, Maximum offset 0: The signature sequence starts at exactly
+* BOF, Offset 4, Maximum offset 0: The signature sequence starts at exactly
 position 0x04, the 5th byte
-
-BOF, Offset 0, Maximum offset 4: The signature sequence may start anywhere
+* BOF, Offset 0, Maximum offset 4: The signature sequence may start anywhere
 within the first 5 bytes
-
-BOF, Offset 4, Maximum Offset 4: The signature sequence may start anywhere
+* BOF, Offset 4, Maximum Offset 4: The signature sequence may start anywhere
 from byte 5 through to byte 9
-
-EOF, Offset 4, Maximum Offset 0: The signature sequence ends exactly 4 bytes
+* EOF, Offset 4, Maximum Offset 0: The signature sequence ends exactly 4 bytes
 from the end of the file
-
-EOF, Offset 4, Maximum Offset 4: The signature sequence may end anywhere
+* EOF, Offset 4, Maximum Offset 4: The signature sequence may end anywhere
 from 4 bytes to 8 bytes from the end of the file
 
-*\> Syntax can also be used to describe offsets, e.g. using a precise
-wildcard or wildcard range:*:
+> Syntax can also be used to describe offsets, e.g. using a precise
+wildcard `{n}` or wildcard range: `{n-m}`:
 
 | Syntax element | Intended use | Example |
 | ----- | ----- | ----- |
@@ -163,9 +161,9 @@ semantics. A handful of basic examples are described below:
 
 | Bytestream | Sequence | Plain-language description |
 | :---- | :---- | :---- |
-|  |  |  |
-|  |  |  |
-|  |  |  |
+| 00 | {n} | ... |
+| 00 | {n} | ... |
+| 00 | {n} | ... |
 
 ## PRONOM signature files
 
@@ -181,63 +179,59 @@ There are two primary sections within a FFSignatureFile element each have
 a one to many relationship to children describing standard signatures and
 metadata about file formats associated with those.
 
-| Element | InternalSignatureCollection  | Child of FFSignatureFile | A collection of standard signatures as described in PRONOM  | Cardinality: 1 |
-| :---- | :---- | :---- | :---- | :---- |
-| Element | InternalSignature  | Child of InternalSignatureCollection | Describes sets of sequences specific to a PRONOM record and describes an internal ID to enable a mapping between \`InternalSignature\` and \`FileFormat\`  | Cardinality: 1 to many |
-| Element | FileFormatCollection | Child of FFSignatureFile | A collection of descriptive metadata blocks, for each PUID described in PRONOM that also has a file format extension or a standard signature | Cardinality: 1 |
-| Element | FileFormat | Child of FileFormatCollection | Describes format name, PUID, extension. Child elements map this format record to an \`InternalSignature\`; optionally lists priorities over or under another identifier to prevent falst-positives. | Cardinality: 1 to many |
+| Type    | Name                          | Relations                              | Cardinality                                                                                                                                                                                       |                        |
+|---------|-------------------------------|----------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
+| Element | `InternalSignatureCollection` | Child of **`FFSignatureFile`**         | A collection of standard signatures as described in PRONOM                                                                                                                                        | Cardinality: 1         |
+| Element | `InternalSignature`           | Child of `InternalSignatureCollection` | Describes sets of sequences specific to a PRONOM record and describes an internal ID to enable a mapping between `InternalSignature` and `FileFormat`                                             | Cardinality: 1 to many |
+| Element | `FileFormatCollection`        | Child of **`FFSignatureFile`**         | A collection of descriptive metadata blocks, for each PUID described in PRONOM that also has a file format extension or a standard signature                                                      | Cardinality: 1         |
+| Element | `FileFormat`                  | Child of `FileFormatCollection`        | Describes format name, PUID, extension. Child elements map this format record to an `InternalSignature`; optionally lists priorities over or under another identifier to prevent falst-positives. | Cardinality: 1 to many |
 
 In XML this looks as follows:
 
-NB. XML comments are used to provide further description.
+> **NB.** XML comments are used to provide further description.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<FFSignatureFile xmlns="http://www.nationalarchives.gov.uk/pronom/SignatureFile" Version="1" DateCreated="2026-09-03T12:22:45">
- <InternalSignatureCollection>
-  <InternalSignature ID="2" Specificity="Specific">
-        <ByteSequence Reference="BOFoffset" Sequence="" MinOffset="" MaxOffset="" />
-        <ByteSequence Reference="BOFoffset" Sequence="" MinOffset="" MaxOffset="" />
-  </InternalSignature>
-  <InternalSignature ID="3" Specificity="Specific">
-        <ByteSequence Reference="BOFoffset" Sequence="" MinOffset="" MaxOffset="" />
-        <ByteSequence Reference="BOFoffset" Sequence="" MinOffset="" MaxOffset="" />
-  </InternalSignature>
-  <InternalSignature ID="4" Specificity="Specific">
-        <ByteSequence Reference="BOFoffset" Sequence="" MinOffset="" MaxOffset="" />
-        <ByteSequence Reference="BOFoffset" Sequence="" MinOffset="" MaxOffset="" />  </InternalSignature>
- </InternalSignatureCollection>
- <FileFormatCollection>
-  <FileFormat ID="1" Name="Development Signature" PUID="dev/1" Version="1.0" MIMEType="application/octet-stream">
-   <Extension>ext</Extension>
-      <Extension>json</Extension>
-      <HasPriorityOverFileFormatID>2</HasPriorityOverFileFormatID>
-      <HasPriorityOverFileFormatID>3</HasPriorityOverFileFormatID>
+<!-- Signature file namespace and metadata is important but none so more as
+     the version here which helps DROID to list signature files in its
+     graphical user interface.
+-->
+<FFSignatureFile xmlns="http://www.nationalarchives.gov.uk/pronom/SignatureFile" Version="1788527087" DateCreated="2026-09-03T12:22:45">
+  <!-- Section 1: InternalSignatureCollection contains 1..* internal signatures
+       associated with a file format.
+  -->
+  <InternalSignatureCollection>
+    <InternalSignature ID="1">
+      <ByteSequence Reference="BOFoffset" Sequence="" MinOffset="" MaxOffset=""/>
+      <ByteSequence Reference="BOFoffset" Sequence="" MinOffset="" MaxOffset=""/>
+    </InternalSignature>
+    <InternalSignature ID="2">
+      <ByteSequence Reference="BOFoffset" Sequence="" MinOffset="" MaxOffset=""/>
+      <ByteSequence Reference="BOFoffset" Sequence="" MinOffset="" MaxOffset=""/>
+    </InternalSignature>
+    <InternalSignature ID="3">
+      <ByteSequence Reference="BOFoffset" Sequence="" MinOffset="" MaxOffset=""/>
+    </InternalSignature>
+  </InternalSignatureCollection>
+  <!-- Section 2: FileFormatCollection contains 1..* file format metadata
+       sections and mappings to internal signatures with priorities, and
+       file format extensions.
+  -->
+  <FileFormatCollection>
+    <FileFormat ID="1" Name="FILE FORMAT NAME" PUID="CUSTOM/PUID" Version="V0" MIMEType="application/octet-stream">
+      <InternalSignatureID>1</InternalSignatureID>
+      <InternalSignatureID>2</InternalSignatureID>
+      <Extension>ext</Extension>
+    </FileFormat>
+    <FileFormat ID="3" Name="FILE FORMAT NAME" PUID="CUSTOM/PUID" Version="V1" MIMEType="application/octet-stream">
+      <InternalSignatureID>3</InternalSignatureID>
+      <Extension>ext</Extension>
+      <!-- A priority means that this record is selected by DROID if a file
+           is also moatched to one it has a priority over.
+      -->
       <HasPriorityOverFileFormatID>1</HasPriorityOverFileFormatID>
-  </FileFormat>
-  <FileFormat ID="2" Name="ZIP Format" PUID="x-fmt/263" Version="" MIMEType="application/zip">
-   <InternalSignatureID>2</InternalSignatureID>
-   <Extension>zip</Extension>
-      <Extension>json</Extension>
-      <HasPriorityOverFileFormatID>2</HasPriorityOverFileFormatID>
-      <HasPriorityOverFileFormatID>3</HasPriorityOverFileFormatID>
-      <HasPriorityOverFileFormatID>1</HasPriorityOverFileFormatID>
-  </FileFormat>
-  <FileFormat ID="3" Name="Microsoft Office Open XML" PUID="fmt/189" Version="" MIMEType="application/octet-stream">
-   <InternalSignatureID>3</InternalSignatureID>
-      <Extension>json</Extension>
-      <HasPriorityOverFileFormatID>2</HasPriorityOverFileFormatID>
-      <HasPriorityOverFileFormatID>3</HasPriorityOverFileFormatID>
-      <HasPriorityOverFileFormatID>1</HasPriorityOverFileFormatID>
-  </FileFormat>
-  <FileFormat ID="4" Name="OLE2 Compound Document Format" PUID="fmt/111" Version="" MIMEType="application/octet-stream">
-   <InternalSignatureID>4</InternalSignatureID>
-      <Extension>json</Extension>
-      <HasPriorityOverFileFormatID>2</HasPriorityOverFileFormatID>
-      <HasPriorityOverFileFormatID>3</HasPriorityOverFileFormatID>
-      <HasPriorityOverFileFormatID>1</HasPriorityOverFileFormatID>
-  </FileFormat>
- </FileFormatCollection>
+    </FileFormat>
+  </FileFormatCollection>
 </FFSignatureFile>
 ```
 
@@ -246,18 +240,96 @@ NB. XML comments are used to provide further description.
 Three primary sections within a ContainerSignatureMapping element with
 some child sections with added relevance:
 
-| Element | ContainerSignatures | Child of ContainerSignatureMapping | Describes a format, and consists of sets of files expected to be consistently found within that container type. Provides an Internal ID to link it to a PUID under File Format Mappings.  | Cardinality 1 to many |
-| :---- | :---- | :---- | :---- | :---- |
-|  | Description | Child of ContainerSignatures | Short description of the container file format | Cardinality: 1 |
-|  | File | Child of ContainerSignatures | A list of file paths, and optional byte patterns specific to the file format being described. | Cardinality 1 to many |
-| Element | FileFormatMappings | Child of ContainerSignatureMapping | A list of mappings between the ContainerSignature ID and PUID as it is found in PRONOM's signature file | Cardinality 1 to many |
-|  | FileFormatMapping | Child of FileFormatMappings | Describes a one-to-one mapping between container signature ID and a PRONOM unique identifier | Cardinality one to many |
-| Element | TriggerPuids | Child of ContainerSignatureMapping | A list of PUIDs that will trigger an attempted container identification in DROID  | Cardinality 1 to many |
-|  | TriggerPUID | Child of TriggerPuids | Lists the PUIDs that will trigger container identification from DROID | Cardinality one to many |
+| Type    | Name                  | Relations                                | Cardinality                                                                                                                                                                              |                         |
+|---------|-----------------------|------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------|
+| Element | `ContainerSignatures` | Child of **`ContainerSignatureMapping`** | Describes a format, and consists of sets of files expected to be consistently found within that container type. Provides an Internal ID to link it to a PUID under File Format Mappings. | Cardinality 1 to many   |
+| Element | `Description`         | Child of `ContainerSignatures`           | Short description of the container file format                                                                                                                                           | -Cardinality: 1         |
+| Element | `File`                | Child of `ContainerSignatures`           | A list of file paths, and optional byte patterns specific to the file format being described.                                                                                            | Cardinality 1 to many   |
+| Element | `FileFormatMappings`  | Child of **`ContainerSignatureMapping`** | A list of mappings between the ContainerSignature ID and PUID as it is found in PRONOM's signature file                                                                                  | Cardinality 1 to many   |
+| Element | `FileFormatMapping`   | Child of `FileFormatMappings`            | Describes a one-to-one mapping between container signature ID and a PRONOM unique identifier                                                                                             | Cardinality one to many |
+| Element | `TriggerPuids`        | Child of **`ContainerSignatureMapping`** | A list of PUIDs that will trigger an attempted container identification in DROID                                                                                                         | Cardinality 1 to many   |
+| Element | `TriggerPUID`         | Child of `TriggerPuids`                  | Lists the PUIDs that will trigger container identification from DROID                                                                                                                    | Cardinality one to many |
 
 In XML this looks as follows:
 
-\> NB. XML comments are used to provide further description.
+> **NB.** XML comments are used to provide further description.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<ContainerSignatureMapping SchemaVersion="1.0" SignatureVersion="1">
+  <!-- Section 1: ContainerSignatures contains qll the information needed
+       to navigate container file structures and identigy files and folders.
+ -->
+ <ContainerSignatures>
+  <ContainerSignature Id="1" ContainerType="OLE2">
+   <Description>Container description</Description>
+   <Files>
+    <File>
+     <!-- Path can be a file, or a directory (directories must be terminated
+          with a forward slash `/`
+     -->
+     <Path>path/to/file</Path>
+     <!-- Each file can be matched using DROID's primary standard signature
+          mechanism. We do this here.
+     -->
+     <BinarySignatures>
+      <InternalSignatureCollection>
+       <InternalSignature ID="1">
+        <ByteSequence Reference="BOFoffset" Sequence="" MinOffset="" MaxOffset="" />
+       </InternalSignature>
+      </InternalSignatureCollection>
+     </BinarySignatures>
+    </File>
+   </Files>
+  </ContainerSignature>
+ </ContainerSignatures>
+  <!-- Section 2: FileFormatMapping maps signatures above to a PRONOM
+       unique identifier (PUID).
+ -->
+ <FileFormatMappings>
+  <FileFormatMapping signatureId="1" Puid="dev/1"></FileFormatMapping>
+ </FileFormatMappings>
+  <!-- Section 3: Describes PUIDs that are matched by DROID to trigger
+       container level identification.
+ -->
+ <TriggerPuids>
+  <TriggerPuid ContainerType="OLE2" Puid="fmt/111"></TriggerPuid>
+  <TriggerPuid ContainerType="ZIP" Puid="fmt/189"></TriggerPuid>
+  <TriggerPuid ContainerType="ZIP" Puid="x-fmt/263"></TriggerPuid>
+ </TriggerPuids>
+</ContainerSignatureMapping>
+```
+
+## Templates for DROID
+
+### Standard signature files
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Remember to increment the version number, e.g. use a UNIX Timestamp -->
+<FFSignatureFile xmlns="http://www.nationalarchives.gov.uk/pronom/SignatureFile" Version="1788527087" DateCreated="2026-09-03T12:22:45">
+ <InternalSignatureCollection>
+  <InternalSignature ID="4" Specificity="Specific">
+   <ByteSequence Reference="BOFoffset" Sequence="FFFFFF" MinOffset="0" MaxOffset="0" />
+   <!-- OPTIONAL: Additional sequences -->
+   <ByteSequence Reference="EOFoffset" Sequence="FFFFFF" MinOffset="0" MaxOffset="0" />
+  </InternalSignature>
+ </InternalSignatureCollection>
+ <FileFormatCollection>
+  <!-- YOUR SIGNATURE'S METADATA GOES BELOW HERE -->
+  <!-- YOUR SIGNATURE'S METADATA GOES BELOW HERE -->
+  <!-- YOUR SIGNATURE'S METADATA GOES BELOW HERE -->
+  <FileFormat ID="1" Name="Development Signature Template" PUID="dev/1" Version="1.0" MIMEType="application/octet-stream">
+   <Extension>ext</Extension>
+  </FileFormat>
+ </FileFormatCollection>
+</FFSignatureFile>
+```
+
+### Container signature files
+
+Container signatures require both a container signature file, and a baseline
+standard signature file.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -271,7 +343,11 @@ In XML this looks as follows:
      <BinarySignatures>
       <InternalSignatureCollection>
        <InternalSignature ID="1">
-        <ByteSequence Reference="BOFoffset" Sequence="" MinOffset="" MaxOffset="" />
+        <ByteSequence Reference="BOFoffset">
+         <SubSequence Position="1" SubSeqMinOffset="0" SubSeqMaxOffset="0">
+          <Sequence>1122</Sequence>
+         </SubSequence>
+        </ByteSequence>
        </InternalSignature>
       </InternalSignatureCollection>
      </BinarySignatures>
@@ -290,70 +366,29 @@ In XML this looks as follows:
 </ContainerSignatureMapping>
 ```
 
-## Templates for DROID
-
-### Standard signature files
+#### Standard signature file for container identification
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<FFSignatureFile xmlns="http://www.nationalarchives.gov.uk/pronom/SignatureFile" Version="1" DateCreated="2026-09-03T12:22:45">
+<FFSignatureFile xmlns="http://www.nationalarchives.gov.uk/pronom/SignatureFile" Version="1788527087" DateCreated="2026-09-03T12:22:45">
  <InternalSignatureCollection>
   <InternalSignature ID="2" Specificity="Specific">
-   <ByteSequence Reference="BOFoffset">
-    <SubSequence Position="1" MinFragLength="0" SubSeqMinOffset="0" SubSeqMaxOffset="4">
-     <Sequence>504B0304</Sequence>
-    </SubSequence>
-   </ByteSequence>
-   <ByteSequence Reference="EOFoffset">
-    <SubSequence Position="1" MinFragLength="0" SubSeqMinOffset="61" SubSeqMaxOffset="65565">
-     <Sequence>504B01</Sequence>
-    </SubSequence>
-   </ByteSequence>
-   <ByteSequence Reference="EOFoffset">
-    <SubSequence Position="1" MinFragLength="0" SubSeqMinOffset="0" SubSeqMaxOffset="65535">
-     <Sequence>504B0506</Sequence>
-    </SubSequence>
-   </ByteSequence>
+   <ByteSequence Reference="BOFoffset" Sequence="504B0304" MinOffset="0" MaxOffset="4" />
+   <ByteSequence Reference="EOFoffset" Sequence="504B01" MinOffset="61" MaxOffset="65565" />
+   <ByteSequence Reference="EOFoffset" Sequence="504B0506" MinOffset="0" MaxOffset="65535" />
   </InternalSignature>
   <InternalSignature ID="3" Specificity="Specific">
-   <ByteSequence Reference="BOFoffset">
-    <SubSequence Position="1" MinFragLength="0" SubSeqMinOffset="0" SubSeqMaxOffset="0">
-     <Sequence>504B0304</Sequence>
-    </SubSequence>
-   </ByteSequence>
-   <ByteSequence Reference="BOFoffset">
-    <SubSequence Position="1" MinFragLength="0" SubSeqMinOffset="4" SubSeqMaxOffset="30">
-     <Sequence>5B436F6E74656E745F54797065735D2E786D6C20A2</Sequence>
-    </SubSequence>
-   </ByteSequence>
-   <ByteSequence Reference="EOFoffset">
-    <SubSequence Position="1" MinFragLength="0" SubSeqMinOffset="0" SubSeqMaxOffset="65535">
-     <Sequence>504B0102</Sequence>
-    </SubSequence>
-   </ByteSequence>
-   <ByteSequence Reference="EOFoffset">
-    <SubSequence Position="1" MinFragLength="0" SubSeqMinOffset="0" SubSeqMaxOffset="65535">
-     <Sequence>504B0506</Sequence>
-    </SubSequence>
-   </ByteSequence>
+   <ByteSequence Reference="BOFoffset" Sequence="504B0304" MinOffset="0" MaxOffset="0" />
+   <ByteSequence Reference="BOFoffset" Sequence="5B436F6E74656E745F54797065735D2E786D6C20A2" MinOffset="4" MaxOffset="30" />
+   <ByteSequence Reference="EOFoffset" Sequence="504B0102" MinOffset="0" MaxOffset="65535" />
+   <ByteSequence Reference="EOFoffset" Sequence="504B0506" MinOffset="0" MaxOffset="65535" />
   </InternalSignature>
   <InternalSignature ID="4" Specificity="Specific">
-   <ByteSequence Reference="BOFoffset">
-    <SubSequence Position="1" MinFragLength="0" SubSeqMinOffset="0" SubSeqMaxOffset="0">
-     <Sequence>D0CF11E0A1B11AE1</Sequence>
-    </SubSequence>
-   </ByteSequence>
-   <ByteSequence Reference="BOFoffset">
-    <SubSequence Position="1" MinFragLength="0" SubSeqMinOffset="0" SubSeqMaxOffset="28">
-     <Sequence>FEFF</Sequence>
-    </SubSequence>
-   </ByteSequence>
+   <ByteSequence Reference="BOFoffset" Sequence="D0CF11E0A1B11AE1" MinOffset="0" MaxOffset="0" />
+   <ByteSequence Reference="BOFoffset" Sequence="FEFF" MinOffset="0" MaxOffset="20" />
   </InternalSignature>
  </InternalSignatureCollection>
  <FileFormatCollection>
-  <FileFormat ID="1" Name="Development Signature" PUID="dev/1" Version="1.0" MIMEType="application/octet-stream">
-   <Extension>ext</Extension>
-  </FileFormat>
   <FileFormat ID="2" Name="ZIP Format" PUID="x-fmt/263" Version="" MIMEType="application/zip">
    <InternalSignatureID>2</InternalSignatureID>
    <Extension>zip</Extension>
@@ -364,15 +399,15 @@ In XML this looks as follows:
   <FileFormat ID="4" Name="OLE2 Compound Document Format" PUID="fmt/111" Version="" MIMEType="application/octet-stream">
    <InternalSignatureID>4</InternalSignatureID>
   </FileFormat>
+  <!-- YOUR SIGNATURE'S METADATA GOES BELOW HERE -->
+  <!-- YOUR SIGNATURE'S METADATA GOES BELOW HERE -->
+  <!-- YOUR SIGNATURE'S METADATA GOES BELOW HERE -->
+  <FileFormat ID="1" Name="Development Signature" PUID="dev/1" Version="1.0" MIMEType="application/octet-stream">
+   <Extension>ext</Extension>
+  </FileFormat>
  </FileFormatCollection>
 </FFSignatureFile>
-
 ```
-
-### Container signature files
-
-…
-https://github.com/exponential-decay/droid-signature-files/blob/master/signature-file-templates/DROID-container-id-container-base-file.xml
 
 ## Worked examples
 
@@ -382,13 +417,13 @@ Here is a real-world signature example taken from PRONOM:
 
 * Position type: Absolute from BOF
 * Offset: 0
-* Value: \<code\>FFD8FFE0{2}4A464946000100(00|01|02)\</code\>
+* Value: `FFD8FFE0{2}4A464946000100(00|01|02)`
 * Position type: Absolute from EOF
 * Offset: 0
 * Maximum Offset: 65536
 * Value: FFD9
 
-\[fmt/42 \- JPEG 1.00\](https://www.nationalarchives.gov.uk/PRONOM/fmt/42).
+[fmt/42 - JPEG 1.00](https://www.nationalarchives.gov.uk/PRONOM/fmt/42)
 
 #### Process
 
@@ -396,9 +431,40 @@ Here is a real-world signature example taken from PRONOM:
 2. add to…
 3.
 
-### Container signature example
+### Container signature examples
 
-…
+1)
+
+<ContainerSignature ContainerType="ZIP" Id="31030">
+<Description>SIARD 2.2</Description>
+<Files>
+<File>
+<Path>header/siardversion/2.2/</Path>
+</File>
+</Files>
+</ContainerSignature>
+
+2.
+
+<ContainerSignature Id="32000" ContainerType="ZIP">
+<Description>Open Raster Image Format</Description>
+<Files>
+<File>
+<Path>mimetype</Path>
+<BinarySignatures>
+<InternalSignatureCollection>
+<InternalSignature ID="32000">
+<ByteSequence Reference="BOFoffset">
+<SubSequence Position="0" SubSeqMinOffset="0" SubSeqMaxOffset="0">
+<Sequence>'image/openraster'</Sequence>
+</SubSequence>
+</ByteSequence>
+</InternalSignature>
+</InternalSignatureCollection>
+</BinarySignatures>
+</File>
+</Files>
+</ContainerSignature>
 
 #### Process
 
@@ -444,26 +510,26 @@ files by hiding the need to write XML from you.
 
 ##### Wildcards
 
-**??** \= single wildcard byte, e.g. \<code\>AB??C3\</code\>
+**??** \= single wildcard byte, e.g. `AB??C3`
 
-**\\*** \= 0-many wildcard bytes, e.g \<code\>BC*D4\</code\>
+**\\*** \= 0-many wildcard bytes, e.g `BC*D4`
 
-**{n}** \= specific number of wildcard bytes, e.g. \<code\>A2{5}F3\</code\>
+**{n}** \= specific number of wildcard bytes, e.g. `A2{5}F3`
 
-**{n-n}** \= range of wildcard bytes, e.g. \<code\>4D{0-12}E4\</code\>
+**{n-n}** \= range of wildcard bytes, e.g. `4D{0-12}E4`
 
 ##### Byte range
 
-**\[hh:hh\]** \= single byte value between range, e.g \<code\>\[00:FA\]\</code\>
+**\[hh:hh\]** \= single byte value between range, e.g `[00:FA]`
 
 ##### Either/or
 
 **(hhhh|hhhh|hh)** \= either/any or these byte values,
-e.g. \<code\>(0D|0A|0D0A)\</code\>
+e.g. `(0D|0A|0D0A)`
 
 ##### Not
 
-**\[\!hh\]** \= anything except this byte value, e.g. \<code\>ABCD\[\!01\]E1\</code\>
+**\[\!hh\]** \= anything except this byte value, e.g. `ABCD[!01]E1`
 
 ### Glossary
 
@@ -494,4 +560,7 @@ the years
 
 ![](./images/flow.png)
 
-## Unused
+## TODO
+
+* [ ] does container description override the signature file?
+* [ ] test new format signatures, especially for container sig.
