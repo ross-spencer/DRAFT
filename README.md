@@ -554,6 +554,18 @@ the years
 
 * https://www.nationalarchives.gov.uk/aboutapps/fileformat/pdf/automatic_format_identification.pdf
 
+* https://exponentialdecay.co.uk/blog/simpledroid-completing-the-circle/
+
+* https://www.unixtimestamp.com/
+
+* https://github.com/nationalarchives/pronom/issues/88#issuecomment-4421635688 <-- shows simple syntax doesn't use min max
+
+* https://ffdev-info.github.io/searching-for-a-signature/005-pronom-syntax.html
+
+* http://markdowntable.com/
+
+* https://www.nationalarchives.gov.uk/aboutapps/fileformat/pdf/automatic_format_identification.pdf
+
 <hr>
 
 ## Unused
@@ -564,3 +576,4 @@ the years
 
 * [ ] does container description override the signature file?
 * [ ] test new format signatures, especially for container sig.
+* [ ] test min max offset...
