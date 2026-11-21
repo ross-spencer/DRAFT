@@ -1,3 +1,14 @@
+---
+progress: |
+  - first draft up to ### Standard signature files
+todo: >
+    * [ ] does container description override the signature file?
+    * [ ] test new format signatures, especially for container sig.
+    * [ ] test min max offset...
+    * [ ] add example PRONOM signautres with plain-text semantics
+    * [ ] make use of the term REGEX
+---
+
 # PRONOM signature development guide
 
 # Table of contents
@@ -21,53 +32,64 @@
 - [Use in ROY](#use-in-roy)
 - [Signature development utility](#signature-development-utility)
 - [Cheatsheet](#cheatsheet)
-  - [Glossary](#glossary)
+- [Glossary](#glossary)
+- [What next?](#what-next)
 - [Credits](#credits)
 - [Informative references](#informative-references)
-- [Unused](#unused)
 - [Unused](#unused)
 
 <!-- via: https://luciopaiva.com/markdown-toc/ -->
 
 ## Introduction
 
-Research into PRONOM signatures is an entire topic best covered by other
-resources like the [PRONOM Starter Pack][starter-1] and the recent
+Research into how to research and determine PRONOM style file format
+signatures, for specific file formats, is an entire topic best covered by
+other resources such as the [PRONOM Starter Pack][starter-1] and the recent
 Carpentries Workshop ["Searching for a Signature"][searching-1].
 
-_What are the fundamental details, however, about what a signature file looks
-like to build one?_
+Signatures, however, all need to be structured using the same rules, and
+once created, they are stored in PRONOM, but then serialized to disk, for
+use by tools such as DROID, Siegfried, and FIDO, into "signature files"; of
+which there are two types, standard (or binary), and container.
 
-This document provides a low-level guide, cribbed from
-various other resources (linked to at the bottom) that should help you
-understand how to build a signature file, but especially, build container
-signature files, for which there are only a small number of resources to
-help you do this today.
+_But what are the fundamental details about how to construct a signature
+and a signature file? What does a signature, or either of the
+signature files, look like?_
+
+This document provides a low-level guide cribbed from various other resources;
+see [informative references](#informative-references), that should help
+you understand how to build both types of DROID signature files,
+i.e., standard and container.
+
+Once you know the fundamentals of a signature and how to create a
+signature file, you can begin to think about creating your own tooling
+to generate and store file format signatures for your own purposes.
 
 [starter-1]: https://github.com/digital-preservation/PRONOM_Research/blob/main/Resources/Starter_Pack.md
 [searching-1]: https://ffdev-info.github.io/searching-for-a-signature/
 
 ## Background
 
-PRONOM records two types of file format signature:
+PRONOM has two types of file format signature, and file format signature
+file:
 
-* Standard signatures.
+* Standard (or binary) signatures.
 * Container signatures.
 
-Standard signatures can be used on all file types and they are used to identify
-consistent patterns and sequences in those files to then assign an identifier.
+Standard signatures can be used on all file types, be that text, binary,
+"container," or everything in between; basically, anything a computer
+looks at as a file. They are used to identify consistent patterns of
+byte sequences in those files and then match them against metadata
+records describing specific file formats.
 
-Container signatures operate on ZIP files, OLE2 files, and GZIP files, which
-are all container file formats.
+Container signatures are more specialized, and if something is a
+container file type, such as ZIP, OLE2, or GZip, they can describe
+a set of rules for interrogating the files and directories within those
+containers and optionally matching them against a standard signature,
+and then a metadata record describing a specific file format.
 
-As container file formats can contain files and directories, container
-signatures function by:
-
-1. identifying a consistent path in a container file
-2. Optionally testing a standard signature pattern against that path
-
-We will look at both types of signature below and describe how to construct
-them; before that, we must talk about something called syntax.
+We will look at both types of signatures below and describe how to
+construct them. Before that, we must talk about something called syntax.
 
 ## Syntax
 
@@ -83,20 +105,28 @@ increasingly complex and nuanced pieces of software.
 
 PRONOM uses a language which has a syntax. This syntax describes "file format
 sequences" and the syntax is limited to a strict definition. The syntax is a
-form of regular expression which is a method for identifying patterns.
+form of regular expression (regex) which is a method for identifying patterns.
 
-When syntax is combined, in written language, code, or in PRONOM, the result
-is a structured set of words and symbols that take on semantic meaning,
+## Semantics
+
+When _syntax_ is combined in written language, code, or in PRONOM, the result
+is a structured set of words and symbols that take on _semantic_ meaning,
 that is, you can read the combination of symbols and determine what they
-describe or what they mean. In language the result might be a poem. In PRONOM
-the result is a set of instructions for sets of bytes, or wildcards, that must,
-or must not exist in a file, at calculable positions, where if everything
-matches, we can say,
+describe or what they mean. In language the result might be a poem.
+In PRONOM, the result is a set of instructions for identifying runs of
+bytes at calculable positions in a file that must or must not exist.
+If everything matches, we can say...
 
 | *"* | *This file conforms to what is described in this signature's syntax. As such, this file is of the type described by this signature.* |
 | ----: | :---- |
 
+We refer to PRONOM's syntax and PRONOM's semantics as a file format signature,
+and this is interchangeable with the term PRONOM regular expression, or
+PRONOM regex.
+
 ## PRONOM syntax
+
+PRONOM has the following syntax.
 
 | Syntax element | Intended use | Example |
 | ----- | ----- | ----- |
@@ -129,6 +159,8 @@ described above. The default is 0, meaning no further possible offset.
 
 ### Position examples
 
+As an illustration, different positions and offsets can be read as follows:
+
 * BOF, Offset 0, Maximum offset 0: The signature sequence starts at the very
 beginning of the file
 * BOF, Offset 4, Maximum offset 0: The signature sequence starts at exactly
@@ -151,13 +183,25 @@ wildcard `{n}` or wildcard range: `{n-m}`:
 
 ## PRONOM semantics
 
-PRONOM signatures can be combined any way whatsoever, but they will usually
-be some form of literal sequence that combines some wildcard elements
-that help account for any variability or uncertainty about what we know
-about a file format's structure.
+As previously mentioned, PRONOM syntax is combined to create meaning.
+That meaning is a set of instructions for identifying patterns of bytes that
+must or must not exist in a file. If those patterns match, and they
+are mapped correctly to a metadata record describing those patterns, we
+can say those patterns belong to the thing described by the record, i.e.
+a file format.
 
-Once PRONOM signatures are combined we can begin to understand their
-semantics. A handful of basic examples are described below:
+PRONOM signatures can be combined any way whatsoever. Usually they
+will contain a literal sequence that always exists in a file, e.g. file (a)
+might always begin with the text "DESKTOP PUBLISHING". Variable
+sequences, or runs of unknown bytes are encoded in a PRONOM signature
+using _wildcards_, e.g. file (a) might also contain a date, followed by more
+known data "DESKTOP PUBLISHING <DATE WILDCARD> BY ACME".
+
+PRONOM signatures can become highly expressive and are capable of
+describing the structure of file formats with considerable precision.
+
+Once PRONOM signatures are combined, we can begin to interpret their
+semantics. A few basic examples are provided below:
 
 | Bytestream | Sequence | Plain-language description |
 | :---- | :---- | :---- |
@@ -167,17 +211,46 @@ semantics. A handful of basic examples are described below:
 
 ## PRONOM signature files
 
-PRONOM signature files are described in Extensible Markup Language (XML).
-While you might not engage with this view of a signature file very often,
-knowing how the file is structured helps you debug issues and helps
-developers with the process of creating software that implements these
-standards.
+PRONOM signature files are currently described in
+[Extensible Markup Language (XML)][xml-1]. While you might not write
+XML yourself, or even look at it very often, knowing how the file
+is structured helps you to debug issues and helps developers with the
+process of creating software that implements these as standards.
+
+[xml-1]: https://en.wikipedia.org/wiki/XML
+
+### XML
+
+[w3schools][w3schools-xml-1] provides a simple and effective introduction
+to XML.
+
+In the text below we will keep it simple, but refer to some aspects:
+
+* Elements, surrounded by angle `<, >` brackets. are the primary structural
+components of an XML file. There is always a single top-level element, a
+_container_, and within that container are more pairs of elements
+which can be nested, or not nested, depending on what is being described.
+All elements have a label and come in pairs that open and close them.
+Closing is done with a forward slash, so to open and close an element
+with the label "tag", we would write: `<tag>content</tag>`.
+* Attributes, are properties of elements, and appear in opening elements
+only, e.g. `<tag attribute="i am an attribute">`.
+* Values, are the contents of elements. Elements can contain other elements,
+these are called leaves or children. Elements can also contain
+alphanumeric characters depending on what is being modeled, e.g.
+`<tag>these alphanumeric characters mean something</tag>`.
+
+[w3schools-xml-1]: https://www.w3schools.com/xml/
 
 ### Standard signature files
 
-There are two primary sections within a FFSignatureFile element each have
-a one to many relationship to children describing standard signatures and
-metadata about file formats associated with those.
+A signature file's container element is `<FFSignatureFile>`. Two further
+elements are used within a `<FFSignatureFile>` as containers that section
+the file into file format signatures, and then the metadata about those
+file format signatures, i.e. a mapping of metadata to the file format
+signature.
+
+The following table describes the rest of the XML file in more detail.
 
 | Type    | Name                          | Relations                              | Cardinality                                                                                                                                                                                       |                        |
 |---------|-------------------------------|----------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
@@ -531,9 +604,28 @@ e.g. `(0D|0A|0D0A)`
 
 **\[\!hh\]** \= anything except this byte value, e.g. `ABCD[!01]E1`
 
-### Glossary
+## What next?
 
-…
+* federate
+* distributed
+* create
+* implement
+
+
+## Glossary
+
+binary
+bytes
+File format identification tool, e.g. DROID Siegfried, FIDO
+File format signature
+gzip
+literal
+ole2
+regex / regular expression
+semantics
+syntax
+wildcard
+zip
 
 ## Credits
 
@@ -571,9 +663,3 @@ the years
 ## Unused
 
 ![](./images/flow.png)
-
-## TODO
-
-* [ ] does container description override the signature file?
-* [ ] test new format signatures, especially for container sig.
-* [ ] test min max offset...
