@@ -1,6 +1,6 @@
 ---
 progress:
-  - first draft up to ### Standard signature files
+  - first draft up to `### Standard signature files`
 todo:
   - one: does container description override the signature file?
   - two: test new format signatures, especially for container sig.
