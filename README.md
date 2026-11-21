@@ -1,12 +1,12 @@
 ---
-progress: |
+progress:
   - first draft up to ### Standard signature files
-todo: >
-    * [ ] does container description override the signature file?
-    * [ ] test new format signatures, especially for container sig.
-    * [ ] test min max offset...
-    * [ ] add example PRONOM signautres with plain-text semantics
-    * [ ] make use of the term REGEX
+todo:
+  - one: does container description override the signature file?
+  - two: test new format signatures, especially for container sig.
+  - three: test min max offset...
+  - four: add example PRONOM signautres with plain-text semantics
+  - five: make use of the term REGEX
 ---
 
 # PRONOM signature development guide
