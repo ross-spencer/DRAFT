@@ -7,6 +7,8 @@ todo:
   - three: test min max offset...
   - four: add example PRONOM signautres with plain-text semantics
   - five: make use of the term REGEX
+  - six: examples from pronom.nationalarchives.gov.uk where helpful
+  - seven: check for references of ffdev.info.
 ---
 
 # PRONOM signature development guide
@@ -245,10 +247,23 @@ alphanumeric characters depending on what is being modeled, e.g.
 ### Standard signature files
 
 A signature file's container element is `<FFSignatureFile>`. Two further
-elements are used within a `<FFSignatureFile>` as containers that section
-the file into file format signatures, and then the metadata about those
-file format signatures, i.e. a mapping of metadata to the file format
-signature.
+elements are used within a `<FFSignatureFile>` as containers that split
+the file into two different sections:
+
+* file format signatures, and
+* metadata about those file format signatures
+
+I.e. a mapping of metadata to the file format signature which enables a
+one-to-many (1..*) mapping between metadata and file format signature, e.g.
+in a case where multiple patterns are required to describe complex variants
+of any particular file format.
+
+An example in PRONOM might be Acrobat PDF/A - Portable Document Format
+[(fmt/95))[https://pronom.nationalarchives.gov.uk/fmt/95]. Two
+"InternalSignature" containers are used to describe two complex sets of
+byte sequences as PRONOM regex. See: [fmt/95 on GitHub][fmt-95].
+
+[fmt-95]: https://github.com/nationalarchives/pronom/blob/fc9cb4b2620cb2624eacac382bae602f69156b4a/signatures/fmt/95.json#L32-L80
 
 The following table describes the rest of the XML file in more detail.
 
@@ -310,8 +325,18 @@ In XML this looks as follows:
 
 ### Container signature files
 
-Three primary sections within a ContainerSignatureMapping element with
-some child sections with added relevance:
+A container signature file's container element is `<ContainerSignatureMapping>`.
+The `<ContainerSignatureMapping>` section contains three additional sections
+which describe:
+
+* A description of container signatures themselves, i.e.folders, files, and
+byte sequences that make up a signature.
+* Metadata about those signatures.
+* And a special section used by tools like DROID to determine what container
+files to try and match files against.
+
+The primary elements of a container signature file are described in the
+following table:
 
 | Type    | Name                  | Relations                                | Cardinality                                                                                                                                                                              |                         |
 |---------|-----------------------|------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------|
@@ -374,6 +399,13 @@ In XML this looks as follows:
 ```
 
 ## Templates for DROID
+
+The signature development utility hosted at [ffdev.info][ffdev-1] will help
+you to construct file format signatures, but you might also want to try
+making them by hand, especially if you want to make quite complex examples.
+The following templates are provided to get you started.
+
+[ffdev-1]: https://ffdev.info
 
 ### Standard signature files
 
